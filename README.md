@@ -12,16 +12,16 @@ The goal of this samll framework is to build a quick spider.
 
 ## TODO
 
--[] add node operation like node combination
--[] parser to define the nodes and construct the graph. (maybe use syntax like markdown)
--[] add more parse method like xpath, regex...
--[] add logger system
--[] try to add asyn feature
--[] robust
--[] some useful nodes for spider builders
--[] maybe a market place to share your nodes.
--[] add gui editor
--[] more and more...
+- [ ] add node operation like node combination
+- [ ] parser to define the nodes and construct the graph. (maybe use syntax like markdown)
+- [ ] add more parse method like xpath, regex...
+- [ ] add logger system
+- [ ] try to add asyn feature
+- [ ] robust
+- [ ] some useful nodes for spider builders
+- [ ] maybe a market place to share your nodes.
+- [ ] add gui editor
+- [ ] more and more...
 
 ## Example for current version
 
