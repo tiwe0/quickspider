@@ -4,6 +4,21 @@ Thid is a samll spider framework which based on nodes and graph built with these
 
 The goal of this samll framework is to build a quick spider.
 
+## Install
+
+1. clone the repository
+
+```bash
+git clone https://github.com/tiwe0/quickspider.git
+```
+
+2. copy the quickspider file to your path directory
+
+```bash
+cd quickspider
+copy bin/quickspider /path/to/your/any/bin/directory
+```
+
 ## How to use it？
 
 1. custome your nodes. (or use nodes writen by others or builtin nodes)
