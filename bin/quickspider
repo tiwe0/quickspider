@@ -1,0 +1,47 @@
+#!/usr/bin/env python3
+import toml
+import argparse
+import shutil
+import os
+import termcolor
+from HTML.core.builder import Builder
+from HTML.core.controller import Controller
+from HTML import _html_template
+
+parser = argparse.ArgumentParser(description="Build and Run a quick spider.")
+subparsers = parser.add_subparsers(help="sub help")
+
+# create the parser for "run"
+parser_run = subparsers.add_parser("run", help="run the quick-spider")
+parser_run.add_argument("--file", help="the toml config file")
+
+parser_create = subparsers.add_parser("create", help="create the strach.")
+parser_create.add_argument("--template", help="the strach template")
+
+args = parser.parse_args()
+
+def run(file_name):
+    with open(file_name, "rt") as f:
+        config = toml.load(f)
+
+    builder = Builder()
+    nodes = config["nodes"]
+    for name, node in nodes.items():
+        builder.node_build(name, node)
+    header = builder.link()
+    controller = Controller(header)
+    controller.start()
+
+def create(template="default"):
+    src_path = _html_template.format(template)
+    dest_path = os.getcwd()
+    shutil.copy2(src_path, dest_path)
+    print(termcolor.colored(f"Template file [{template}] Copied", "green"))
+
+if hasattr(args, "file"):
+    file_name = args.file
+    run(file_name)
+else:
+    template = args.template
+    create(template)
+

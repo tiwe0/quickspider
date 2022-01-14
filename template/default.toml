@@ -1,0 +1,23 @@
+[nodes]
+
+[nodes.url]
+type = "PageNode"
+input = "http://quotes.toscrape.com/page/{page}/"
+start = 1
+stop = 6
+
+[nodes.Geter]
+type = "GetNode"
+
+[nodes.parser_node]
+type = "ParserNode"
+mode = "dom"
+
+[nodes.parser_dom_node]
+type = "ParserDomNode"
+mode = "css"
+parser = "span.text::text"
+
+[nodes.extract_node]
+type = "ExtractNode"
+
