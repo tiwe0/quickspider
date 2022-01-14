@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-from HTML.core.Node import BaseNode
-from HTML.core.nodes import *
+from quickspider.core.Node import BaseNode
+from quickspider.core.nodes import *
 from collections import deque
 
 class Builder:

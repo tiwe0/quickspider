@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 from collections.abc import Iterable
-from HTML.core.utils import MyIterator
-from HTML.core.error import InvalidInputError
-from HTML.core.controller import Controller
+from quickspider.core.utils import MyIterator
+from quickspider.core.error import InvalidInputError
+from quickspider.core.controller import Controller
 import logging
 
 

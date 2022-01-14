@@ -1,3 +1,14 @@
+Metadata-Version: 2.1
+Name: quickspider
+Version: 0.1.0
+Summary: help you build a small spider quickly.
+Home-page: https://github.com/tiwe0/quickspider.git
+Author: Ivory
+Author-email: zheng@stu.xmu.edu.cn
+License: UNKNOWN
+Platform: UNKNOWN
+License-File: LICENSE
+
 # QuickSpider
 
 Thid is a samll spider framework which based on nodes and graph built with these nodes.
@@ -6,10 +17,17 @@ The goal of this samll framework is to build a quick spider.
 
 ## Install
 
-use pip
+1. clone the repository
 
 ```bash
-pip install -i https://test.pypi.org/simple/ quickspider
+git clone https://github.com/tiwe0/quickspider.git
+```
+
+2. copy the quickspider file to your path directory
+
+```bash
+cd quickspider
+copy bin/quickspider /path/to/your/any/bin/directory
 ```
 
 ## How to use it？
@@ -42,4 +60,6 @@ then, you can find one toml file: default.toml
 ```bash
 quickspider run --file deafult.toml
 ```
+
+
 

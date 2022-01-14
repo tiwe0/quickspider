@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from HTML.core.leafpool import LeafPool
+from quickspider.core.leafpool import LeafPool
 import logging
 
 

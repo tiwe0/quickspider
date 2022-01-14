@@ -1,4 +1,4 @@
-from HTML.core.Node import BaseNode, IterableNode
+from quickspider.core.Node import BaseNode, IterableNode
 from scrapy import Selector
 from requests import Session
 from termcolor import colored

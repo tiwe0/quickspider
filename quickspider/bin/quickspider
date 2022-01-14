@@ -4,9 +4,9 @@ import argparse
 import shutil
 import os
 import termcolor
-from HTML.core.builder import Builder
-from HTML.core.controller import Controller
-from HTML import _html_template
+from quickspider.core.builder import Builder
+from quickspider.core.controller import Controller
+from quickspider import _html_template
 
 parser = argparse.ArgumentParser(description="Build and Run a quick spider.")
 subparsers = parser.add_subparsers(help="sub help")
