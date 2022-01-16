@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from collections.abc import Iterable
-from quickspider.core.utils import MyIterator
+from quickspider.core.utils import MyIterator, ProcessExceptionEmpty
 from quickspider.core.error import InvalidInputError
 from quickspider.core.controller import Controller
 import logging
@@ -102,16 +102,43 @@ class BaseNode:
             raise InvalidInputError
         _input = self._input
         # 具体实现委托给 process_input
-        _middle = self.process_input(_input)
+        if isinstance(_input, ProcessExceptionEmpty):
+            _middle = _input
+        else:
+            try:
+                _middle = self.process_input(_input)
+            except Exception as e:
+                print(e)
+                _middle = ProcessExceptionEmpty()
         self._middle = _middle
         self._clear_input()
         self._not_empty()
 
+    def _slot_fill_middle(self):
+        if self._status == "EMPTY":
+            self.logger.debug("activate: [EMPTY | input -> middle]")
+            try:
+                self._slot_input_to_middle()
+            except Exception as e:
+                self.logger.debug(f"activate: [EMPTY {self._name} | input -> middle] + failed with {e}")
+                raise e
+
     def _slot_middle_to_output(self):
+        self.logger.debug("activate: [middle -> output]")
         one_piece = self._middle
         self._output = one_piece
         self._clear_middle()
         self._not_empty()
+
+    def _slot_output_to_next(self):
+        if self._is_leaf():
+            self.logger.debug("activate: [LEAF | output -> child]")
+            self._slot_output_to_child_leaf()
+        else:
+            self.logger.debug("activate: [output -> child]")
+            if isinstance(self._output, ProcessExceptionEmpty):
+                return
+            self._slot_output_to_child()
 
     def _slot_output_to_child(self):
         _output = self._output
@@ -129,21 +156,14 @@ class BaseNode:
     # HACK CORE
     def activate(self):
         self.logger.debug("activate: start")
-        if self._status == "EMPTY":
-            self.logger.debug("activate: [EMPTY | input -> middle]")
-            try:
-                self._slot_input_to_middle()
-            except Exception as e:
-                self.logger.debug(f"activate: [EMPTY {self._name} | input -> middle] + failed with {e}")
-                return False
-        self.logger.debug("activate: [middle -> output]")
-        self._slot_middle_to_output()
-        if self._is_leaf():
-            self.logger.debug("activate: [LEAF | output -> child]")
-            self._slot_output_to_child_leaf()
-        else:
-            self.logger.debug("activate: [output -> child]")
-            self._slot_output_to_child()
+        # 如果需要编写抽象类，如IteratorNode，则必须实现_empty()
+        try:
+            self._slot_fill_middle()
+            self._slot_middle_to_output()
+            self._slot_output_to_next()
+        except Exception as e:
+            print(e)
+            return False
         return True
 
 

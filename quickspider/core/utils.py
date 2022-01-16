@@ -22,3 +22,7 @@ class MyIterator:
             self._container = chain([one_piece], self._container)
             return True
         return False
+
+
+class ProcessExceptionEmpty:
+    pass
