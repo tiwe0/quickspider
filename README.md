@@ -37,13 +37,13 @@ pip install quickspider
 1. 使用默认模板创建图。
 
 ```bash
-quickspider create --template default
+quickspiderrun create --template default
 ```
 
 2. 直接运行默认图。
 
 ```bash
-quickspider run --file deafult.toml
+quickspiderrun run --file deafult.toml
 ```
 
 ## 说明
