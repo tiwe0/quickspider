@@ -1,0 +1,29 @@
+[nodes]
+
+[nodes.url]
+type = "CsvReaderNode"
+file = "./02天津汇总.csv"
+column = "原文链接"
+
+[nodes.Geter]
+type = "GetNode"
+
+[nodes.parser_node]
+type = "ParserNode"
+mode = "dom"
+
+[nodes.parser_dom_node]
+type = "ParserDomNode"
+mode = "css"
+parser = "div#divFullText *::text"
+
+[nodes.concat_node]
+type = "ConcatNode"
+
+[nodes.saver_node]
+type = "JsonWriterNode"
+file = "./test.json"
+
+[nodes.print_node]
+type = "PrintNode"
+

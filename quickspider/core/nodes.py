@@ -21,7 +21,7 @@ class GetNode(SessionNode):
         try:
             resp = self._session.get(_input_url)
         except Exception as e:
-            print(e)
+            print(colored(str(e), "red"))
             resp = None
         return resp
 
@@ -34,7 +34,7 @@ class PostNode(SessionNode):
         try:
             resp = self._session.post(_input_url, json=self._data)
         except Exception as e:
-            print(e)
+            print(colored(str(e), "red"))
             resp = None
         return resp
 
@@ -96,7 +96,7 @@ class ConcatNode(BaseNode):
 #-------------> 输出测试节点 <--------------
 class PrintNode(BaseNode):
     def process_input(self, _input):
-        print(_input)
+        print(colored(_input, "green"))
         return _input
 
 
@@ -167,6 +167,23 @@ class JsonWriterNode(BaseNode):
         with open(self._file, "wt", encoding="utf8") as f:
             json.dump(self._container, f)
 
+class CsvWriterNode(BaseNode):
+    def __init__(self, _name, _file):
+        super().__init__(_name)
+        self._file = _file
+        self._container = []
+
+    def init(self):
+        if os.path.exists(self._file):
+            os.remove(self._file)
+
+    def process_input(self, _input):
+        self._container.append(_input)
+        return _input
+
+    def post(self):
+        df = pd.DataFrame({"result": self._container})
+        df.to_excel(self._file)
 
 if __name__ == "__main__":
     header = BaseNode("header")

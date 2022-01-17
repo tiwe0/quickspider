@@ -7,7 +7,7 @@ with open("./README.md", "rt") as f:
 
 setup(
         name='quickspider',
-        version='0.1.0',
+        version='0.1.2',
         description='help you build a small spider quickly.',
         long_description=long_description,
         author='Ivory',

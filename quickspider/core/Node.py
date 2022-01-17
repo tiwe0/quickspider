@@ -108,7 +108,7 @@ class BaseNode:
             try:
                 _middle = self.process_input(_input)
             except Exception as e:
-                print(e)
+                # print(e)
                 _middle = ProcessExceptionEmpty()
         self._middle = _middle
         self._clear_input()
@@ -162,7 +162,7 @@ class BaseNode:
             self._slot_middle_to_output()
             self._slot_output_to_next()
         except Exception as e:
-            print(e)
+            # print(e)
             return False
         return True
 
