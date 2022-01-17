@@ -16,5 +16,5 @@ setup(
         packages=['quickspider', 'quickspider.core', 'quickspider.template'],
         package_dir={'quickspider': 'quickspider'},
         package_data={'quickspider': ['template/*.toml']},
-        scripts=['quickspider/bin/quickspider']
+        scripts=['quickspider/bin/quickspidercommand']
         )
