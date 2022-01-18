@@ -20,9 +20,9 @@ pip install quickspider
 
 ## TODO
 
-- [ ] 动态扫描节点类
+- [x] 动态扫描节点类(50%)
 - [ ] 添加节点间的组合
-- [*] 解析器(50%)
+- [x] 解析器(50%)
 - [ ] add more parse method like xpath, regex...
 - [ ] 添加日志系统
 - [ ] 尝试添加并发
@@ -37,13 +37,13 @@ pip install quickspider
 1. 使用默认模板创建图。
 
 ```bash
-quickspiderrun create --template default
+quickspidercommand create --template default
 ```
 
 2. 直接运行默认图。
 
 ```bash
-quickspiderrun run --file deafult.toml
+quickspidercommand run --file deafult.toml
 ```
 
 ## 说明
@@ -62,7 +62,7 @@ quickspiderrun run --file deafult.toml
 
 ### 这个东西是怎么实现的？
 
-`quickspider`的想法非常简单，quickspider中包含各种各样的节点，这些节点可能是你自己编写的（请参考编写手册），也可能是别人编写的（请参考这个人写的帮助文档），也可能是内置的（请参考内置节点说明）。使用toml文档声明，配置这些节点，并将这些节点构造成一棵树，之后即可使用这个树指导quickspider进行爬取。
+`quickspider`的想法非常简单，`quickspider`中包含各种各样的节点，这些节点可能是你自己编写的（请参考编写手册），也可能是别人编写的（请参考这个人写的帮助文档），也可能是内置的（请参考内置节点说明）。使用toml文档声明，配置这些节点，并将这些节点构造成一棵树，之后即可使用这个树指导`quickspider`进行爬取。
 
 爬取的本质是数据信息的变换，而具体执行变换的，就是节点。由节点构成的树便形成了一个数据变换流。
 
@@ -91,10 +91,109 @@ type = "GetNode"
 
 1. 比如[nodes.url]:
 
-该节点的名称为`url`，类别为`PageNode`。这是个内置的节点类别，该节点的作用为将`input`以`page`为关键字，以[start, stop)作为区间，作一个格式化处理。其中还有一个参数为step，默认为1，因此可以省去。
+    该节点的名称为`url`，类别为`PageNode`。这是个内置的节点类别，该节点的作用为将`input`以`page`为关键字，以[start, stop)作为区间，作一个格式化处理。其中还有一个参数为step，默认为1，因此可以省去。
 
 2. 比如[nodes.Geter]:
 
-该节点的名称为`Geter`，类别为`GetNode`。这也是个内置的节点类别。该节点会将URL转换为Response。
+    该节点的名称为`Geter`，类别为`GetNode`。这也是个内置的节点类别。该节点会将URL转换为Response。
 
+### 有哪些内置节点呢？
+
+#### Constructor
+
+1. `PageNode`
+
+#### Web
+
+1. `GetNode`
+
+    ```toml
+    [nodes.example]
+    type = "GetNode"
+    ```
+
+2. `PostNode`
+
+    ```toml
+    [nodes.example]
+    type = "PostNode"
+    data(optional) = {}
+    ```
+
+#### Parser
+
+1. `ParserNode`
+
+    ```toml
+    [nodes.example]
+    type = "ParserNode"
+    mode = ("dom" or "json")
+    ```
+
+2. `ParserDomNode`
+
+    ```toml
+    [nodes.example]
+    type = "ParserNode"
+    mode = ("css")
+    parser = ""
+    ```
+
+3. `ExtractNode`
+
+    ```toml
+    [nodes.example]
+    type = "ParserNode"
+    ```
+
+4. `ConcatNode`
+
+    ```toml
+    [nodes.example]
+    type = "ConcatNode"
+    ```
+
+#### I/O
+
+1. `CsvReaderNode`
+
+    ```toml
+    [nodes.example]
+    type = "CsvReaderNode"
+    file = "file_path"
+    column = "column_to_read"
+    ```
+
+2. `ExcelReaderNode`
+
+    ```toml
+    [nodes.example]
+    type = "ExcelReaderReaderNode"
+    file = "file_path"
+    column = "column_to_read"
+    ```
+
+3. `LineReaderNode`
+
+    ```toml
+    [nodes.example]
+    type = "LineReaderReaderNode"
+    file = "file_path"
+    ```
+
+4. `JsonWriterNode`
+
+    ```toml
+    [nodes.example]
+    type = "JsonWriterReaderNode"
+    file = "file_path"
+    ```
+
+5. `CsvWriterNode`
+
+    ```toml
+    [nodes.example]
+    type = "CsvWriterReaderNode"
+    file = "file_path"
+    ```
 

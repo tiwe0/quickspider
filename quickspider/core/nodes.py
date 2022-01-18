@@ -2,7 +2,7 @@ from quickspider.core.Node import BaseNode, IterableNode
 from scrapy import Selector
 from requests import Session
 from termcolor import colored
-import pandas as pd
+import openpyxl
 import csv
 import json
 import os
@@ -28,8 +28,10 @@ class GetNode(SessionNode):
 
 
 class PostNode(SessionNode):
-    def _set_data(self, data: dict):
-        self._data = data
+    def _set_data(self, _data: dict=None):
+        if not _data:
+            _data = {}
+        self._data = _data
 
     def process_input(self, _input_url):
         try:
@@ -118,25 +120,43 @@ FileReaderNode = IterableNode
 class CsvReaderNode(FileReaderNode):
     def __init__(self, _name, _file, _column):
         super().__init__(_name)
-        self._set_input(_file)
+        self._file = _file
         self._column = _column
 
+    def init(self):
+        if os.path.exists(self._file):
+            os.remove(self._file)
+        self._csvfile = open(self._file, mode="rt")
+        self._csvdictreader = csv.DictReader(self._csvfile)
+
     def process_input(self, _input):
-        df = pd.read_csv(_input)
-        for item in df[self._column]:
-            yield item
+        for row in self._csvdictreader:
+            yield row[self._column]
+
+    def post(self):
+        self._csvfile.close()
 
 
 class ExcelReaderNode(FileReaderNode):
     def __init__(self, _name, _file, _column):
         super().__init__(_name)
-        self._set_input(_file)
+        self._file = _file
         self._column = _column
 
+    def init(self):
+        wb = openpyxl.load_workbook(self._file)
+        # select active sheet by default
+        self._sheet = wb.active
+        for col in range(1, self._sheet.max_column + 1):
+            if self._sheet.cell(1, col).value == self._column:
+                self._col_index = col
+                return
+        raise Exception("No such index")
+
     def process_input(self, _input):
-        df = pd.read_excel(_input)
-        for item in df[self._column]:
-            yield item
+        for row in range(2, self._sheet.max_rol + 1):
+            cell = self._sheet.cell(row=row, column=self._col_indx)
+            yield cell.value
 
 
 class LineReaderNode(FileReaderNode):
@@ -187,20 +207,5 @@ class CsvWriterNode(BaseNode):
     def post(self):
         self._file_handel.close()
 
-if __name__ == "__main__":
-    header = BaseNode("header")
-    url_gen = PageNode("url", "http://quotes.toscrape.com/page/{page}/", 1, 6)
-    getnode = GetNode("Geter")
-    parsernode= ParserNode("parser", "dom")
-    parserdomnode = ParserDomNode("parserdomnode" ,"css", "span.text::text")
-    extractnode = ExtractNode("extract_node")
+# add your own node 
 
-    header._add_child(url_gen)
-    url_gen._add_child(getnode)
-    getnode._add_child(parsernode)
-    parsernode._add_child(parserdomnode)
-    parserdomnode._add_child(extractnode)
-
-    from controller import Controller
-    c = Controller(header)
-    c.start()
