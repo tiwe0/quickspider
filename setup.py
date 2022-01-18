@@ -7,11 +7,11 @@ with open("./README.md", "rt") as f:
 
 setup(
         name='quickspider',
-        version='0.1.2',
+        version='0.1.2.1',
         description='help you build a small spider quickly.',
-        long_description=long_description,
+        long_description="see github.",
         author='Ivory',
-        author_email='zheng@stu.xmu.edu.cn',
+        author_email='1070642565@qq.com',
         url='https://github.com/tiwe0/quickspider.git',
         packages=['quickspider', 'quickspider.core', 'quickspider.template'],
         package_dir={'quickspider': 'quickspider'},
