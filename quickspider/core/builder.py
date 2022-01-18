@@ -2,7 +2,7 @@
 import inspect
 import quickspider.core.Node
 import quickspider.core.nodes
-from quickspider.core.nodes import *
+from quickspider.core.Node import BaseNode
 from collections import deque
 
 # scan the node class in nodes

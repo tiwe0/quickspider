@@ -3,6 +3,7 @@ from scrapy import Selector
 from requests import Session
 from termcolor import colored
 import pandas as pd
+import csv
 import json
 import os
 s = Session()
@@ -165,25 +166,26 @@ class JsonWriterNode(BaseNode):
 
     def post(self):
         with open(self._file, "wt", encoding="utf8") as f:
-            json.dump(self._container, f)
+            json.dump(self._container, f, ensure_ascii=False, indent=4)
 
 class CsvWriterNode(BaseNode):
     def __init__(self, _name, _file):
         super().__init__(_name)
         self._file = _file
-        self._container = []
 
     def init(self):
         if os.path.exists(self._file):
             os.remove(self._file)
+        self._file_handel = open(self._file, "wt", encoding="utf8")
+        self._csv_writer = csv.writer(self._file_handel)
+        self._csv_writer.writerow(["result"])
 
     def process_input(self, _input):
-        self._container.append(_input)
+        self._csv_writer.writerow([_input])
         return _input
 
     def post(self):
-        df = pd.DataFrame({"result": self._container})
-        df.to_excel(self._file)
+        self._file_handel.close()
 
 if __name__ == "__main__":
     header = BaseNode("header")
