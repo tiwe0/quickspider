@@ -1,15 +1,21 @@
-#!/usr/bin/env python3
+#/usr/bin/env python3
 import inspect
 import quickspider.core.Node
 import quickspider.core.nodes
+import quickspider.core.custom
 from quickspider.core.Node import BaseNode
 from collections import deque
 
 # scan the node class in nodes
 node_class = {"basenode": quickspider.core.Node.BaseNode}
-for name, obj in inspect.getmembers(quickspider.core.nodes):
-    if inspect.isclass(obj) and issubclass(obj, quickspider.core.Node.BaseNode):
-        node_class[name.lower()] = obj
+def add_node_class(module):
+    global node_class
+    for name, obj in inspect.getmembers(module):
+        if inspect.isclass(obj) and issubclass(obj, quickspider.core.Node.BaseNode):
+            node_class[name.lower()] = obj
+
+add_node_class(quickspider.core.nodes)
+add_node_class(quickspider.core.custom)
 
 class Builder:
     node_class = node_class

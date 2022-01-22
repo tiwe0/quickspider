@@ -25,7 +25,7 @@ class LeafPool:
         index = 0
         while True:
             one_leaf = pool[index]
-            success = one_leaf.activate()
+            success, _ = one_leaf.activate()
             if not success and index == (num-1):
                 break
             index += 1

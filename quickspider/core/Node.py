@@ -133,12 +133,13 @@ class BaseNode:
     def _slot_output_to_next(self):
         if self._is_leaf():
             self.logger.debug("activate: [LEAF | output -> child]")
-            self._slot_output_to_child_leaf()
+            _output = self._slot_output_to_child_leaf()
         else:
             self.logger.debug("activate: [output -> child]")
             if isinstance(self._output, ProcessExceptionEmpty):
                 return
-            self._slot_output_to_child()
+            _output = self._slot_output_to_child()
+        return _output
 
     def _slot_output_to_child(self):
         _output = self._output
@@ -146,12 +147,12 @@ class BaseNode:
             child._set_input(_output)
         self._clear_output()
         self._not_empty()
+        return _output
 
     def _slot_output_to_child_leaf(self):
         _output = self._output
-        print(_output)
-        print("")
         self._clear_output()
+        return _output
 
     # HACK CORE
     def activate(self):
@@ -160,11 +161,11 @@ class BaseNode:
         try:
             self._slot_fill_middle()
             self._slot_middle_to_output()
-            self._slot_output_to_next()
+            _output = self._slot_output_to_next()
         except Exception as e:
             # print(e)
-            return False
-        return True
+            return False, None
+        return True, _output
 
 
 class IterableNode(BaseNode):
@@ -202,13 +203,3 @@ class IterableNode(BaseNode):
     def process_input(self, _input):
         return (_input+f"_{i}_by_[{self._name}]" for i in range(5))
 
-
-if __name__ == "__main__":
-    header = BaseNode("header")
-    node_1 = BaseNode("node_1")
-    node_2 = BaseNode("node_2")
-    node_3 = BaseNode("node_3")
-    node_4 = BaseNode("node_4")
-    header.add_child(node_1).add_child(node_2).add_child(node_3).add_child(node_4)
-    node_1._set_input("测试")
-    controller = Controller(header)

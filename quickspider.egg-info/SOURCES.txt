@@ -11,6 +11,7 @@ quickspider/core/Node.py
 quickspider/core/__init__.py
 quickspider/core/builder.py
 quickspider/core/controller.py
+quickspider/core/custom.py
 quickspider/core/error.py
 quickspider/core/leafpool.py
 quickspider/core/nodes.py
@@ -18,3 +19,4 @@ quickspider/core/utils.py
 quickspider/template/__init__.py
 quickspider/template/default.toml
 quickspider/template/sheet.toml
+quickspider/test/test_nodes.py

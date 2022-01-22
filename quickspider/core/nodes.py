@@ -6,14 +6,15 @@ import openpyxl
 import csv
 import json
 import os
-s = Session()
-s.headers = {"User-Agent": "Google-Bot"}
 
 
 #-------------> 网络节点 <--------------
 class SessionNode(BaseNode):
-    def __init__(self, _name, _session=s):
+    def __init__(self, _name, _session=None):
         super().__init__(_name)
+        if not _session:
+            _session = Session()
+            _session.headers = {"User-Agent": "Google-Bot"}
         self._session = _session
 
 
@@ -86,8 +87,14 @@ class ParserJsonNode(BaseNode):
 #-------------> 组合节点 <--------------
 class ExtractNode(IterableNode):
     def process_input(self, _input_parser):
+        for _sub_parser in _input_parser:
+            yield _sub_parser
+
+
+class SplitNode(IterableNode):
+    def process_input(self, _input_parser):
         result = _input_parser.getall()
-        return (colored(i, "green") for i in result)
+        return (i for i in result)
 
 
 class ConcatNode(BaseNode):
@@ -100,6 +107,7 @@ class ConcatNode(BaseNode):
 class PrintNode(BaseNode):
     def process_input(self, _input):
         print(colored(_input, "green"))
+        print("")
         return _input
 
 
@@ -120,42 +128,34 @@ FileReaderNode = IterableNode
 class CsvReaderNode(FileReaderNode):
     def __init__(self, _name, _file, _column):
         super().__init__(_name)
-        self._file = _file
+        self._set_input(_file)
         self._column = _column
 
-    def init(self):
-        if os.path.exists(self._file):
-            os.remove(self._file)
-        self._csvfile = open(self._file, mode="rt")
-        self._csvdictreader = csv.DictReader(self._csvfile)
-
     def process_input(self, _input):
-        for row in self._csvdictreader:
-            yield row[self._column]
-
-    def post(self):
-        self._csvfile.close()
-
+        if not os.path.exists(_input):
+            raise Exception("Not Exist")
+        with open(_input, mode="rt") as csvfile:
+            csvdictreader = csv.DictReader(csvfile)
+            for row in csvdictreader:
+                yield row[self._column]
+        
 
 class ExcelReaderNode(FileReaderNode):
     def __init__(self, _name, _file, _column):
         super().__init__(_name)
-        self._file = _file
+        self._set_input(_file)
         self._column = _column
 
-    def init(self):
-        wb = openpyxl.load_workbook(self._file)
-        # select active sheet by default
-        self._sheet = wb.active
-        for col in range(1, self._sheet.max_column + 1):
-            if self._sheet.cell(1, col).value == self._column:
-                self._col_index = col
-                return
-        raise Exception("No such index")
-
     def process_input(self, _input):
-        for row in range(2, self._sheet.max_rol + 1):
-            cell = self._sheet.cell(row=row, column=self._col_indx)
+        wb = openpyxl.load_workbook(_input)
+        # select active sheet by default
+        sheet = wb.active
+        for col in range(1, sheet.max_column + 1):
+            if sheet.cell(1, col).value == self._column:
+                col_index = col
+                break
+        for row in range(2, sheet.max_rol + 1):
+            cell = sheet.cell(row=row, column=col_indx)
             yield cell.value
 
 
