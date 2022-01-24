@@ -6,7 +6,7 @@ var hex = aesjs.utils.hex
 var AesCfb = aesjs.ModeOfOperation.cfb
 var wrdvpnKey = 'wrdvpnisthebest!'
 var wrdvpnIV = 'wrdvpnisthebest!'
-var baseUrl = 'https://webvpn.xmu.edu.cn/'
+var baseUrl = 'https://webvpn.xmu.edu.cn'
 var textRightAppend = function (text, mode) {
     var segmentByteSize = mode === 'utf8' ? 16 : 32
 
@@ -799,4 +799,4 @@ module.exports = {
 };
 
 var argUrl = process.argv.slice(2)
-console.log(encrypUrl("https", argUrl[0]))
+console.log(baseUrl + encrypUrl("https", argUrl[0]))

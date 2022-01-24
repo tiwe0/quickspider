@@ -2,7 +2,6 @@
 from collections.abc import Iterable
 from quickspider.core.utils import MyIterator, ProcessExceptionEmpty
 from quickspider.core.error import InvalidInputError
-from quickspider.core.controller import Controller
 import logging
 
 
@@ -19,6 +18,16 @@ class BaseNode:
         self.logger = logging.getLogger(self._name)
         self.logger.setLevel(logging.DEBUG)
 
+    def __call__(self, _input):
+        self._set_input(_input)
+        status, _output = self.activate()
+        if status:
+            print("[Activate Success]")
+            return _output
+        else:
+            print("[Activate Failed]")
+            raise Exception("Failed")
+
     def init(self):
         self.logger.debug("init")
         pass
@@ -26,6 +35,13 @@ class BaseNode:
     def post(self):
         self.logger.debug("post")
         pass
+
+    def __enter__(self):
+        self.init()
+        return self
+
+    def __exit__(self, type, value, trace):
+        self.post()
 
     def add_child(self, node):
         if isinstance(node, Iterable):
